@@ -12,7 +12,7 @@
             --delay-show-spanish: 7s;
             --interval-change: 14s; /* Ajustado a 14s como en tu script */
             --min-height-phrase: 150px;
-            --input-bottom: 30%;
+            --input-bottom: 10%;
             --color-correct: #4CAF50;
             --color-incorrect: #f44336;
             --color-primary: #ffcc00;
@@ -227,7 +227,7 @@
 
         .instructions {
             position: absolute;
-            bottom: 70px;
+            bottom: 90px;
             color: rgba(255, 255, 255, 0.8);
             font-size: 1.2em;
             text-align: center;
@@ -281,7 +281,7 @@
     <script>
         // Configuración de tiempos
         const config = {
-            delayShowSpanish: 10000, // 7 segundos
+            delayShowSpanish: 1000, // 7 segundos
             intervalChange: 15000, // 14 segundos
             timerTotal: 15 // segundos totales para el temporizador
         };
@@ -418,9 +418,11 @@
             // 1. Elimina espacios al inicio y al final (`.trim()`).
             // 2. Elimina cualquier secuencia de uno o más '?', '.', o '!' al final de la cadena (`.replace(/[\?!.]+$/, '')`).
             // La 'i' en la bandera de la expresión regular no es necesaria aquí porque ya usamos .toLowerCase()
-            const normalizedInput = userInput.trim().replace(/[\?!.]+$/, '');
-            const normalizedPhrase = currentPhrase.trim().replace(/[\?!.]+$/, '');
-            
+          
+            const normalizedInput = userInput.trim().replace(/,/g, '').replace(/[\?!.]+$/, '');
+            const normalizedPhrase = currentPhrase.trim().replace(/,/g, '').replace(/[\?!.]+$/, '');
+
+
             // Compara las frases normalizadas (ignorando mayúsculas/minúsculas)
             if (normalizedInput.toLowerCase() === normalizedPhrase.toLowerCase()) {
                 // Si la respuesta es correcta
