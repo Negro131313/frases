@@ -419,8 +419,16 @@
             // 2. Elimina cualquier secuencia de uno o más '?', '.', o '!' al final de la cadena (`.replace(/[\?!.]+$/, '')`).
             // La 'i' en la bandera de la expresión regular no es necesaria aquí porque ya usamos .toLowerCase()
           
-            const normalizedInput = userInput.trim().replace(/,/g, '').replace(/[\?!.]+$/, '');
-            const normalizedPhrase = currentPhrase.trim().replace(/,/g, '').replace(/[\?!.]+$/, '');
+       const normalizePhrase = (phrase) => {
+    return phrase.trim()
+        .replace(/[\?!.]+$/, '')  // Elimina signos finales
+        .replace(/,/g, '')        // Elimina comas
+        .replace(/\btake\s*off\b/gi, "takeoff")  // Unifica "take off" y "takeoff"
+        .toLowerCase();           // Ignora mayúsculas/minúsculas
+};
+
+const normalizedInput = normalizePhrase(userInput);
+const normalizedPhrase = normalizePhrase(currentPhrase);
 
 
             // Compara las frases normalizadas (ignorando mayúsculas/minúsculas)
