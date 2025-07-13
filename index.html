@@ -5,6 +5,25 @@
     <title>Reconocimiento Automático de Frases</title>
     <script src="frases1.js"></script>
     <style>
+
+#translation-input {
+     width: 95%;
+     min-height: 50px;  /* Altura inicial más corta */
+     max-height: 200px; /* Límite máximo */
+     /* ... */
+     resize: vertical;
+     overflow-y: auto;
+     white-space: pre-wrap;
+     word-wrap: break-word;
+     line-height: 1.4;
+     margin: 0 auto;    /* Centrado */
+}
+
+.progress-container {
+     width: 95%;        /* Mismo ancho que el textarea */
+     margin: 15px auto 0; /* Centrado */
+}
+        
         :root {
             --font-size-english: 2.5em;
             --font-size-spanish: 2em;
@@ -80,22 +99,30 @@
         }
 
         .barra-texto {
-            position: absolute;
-            bottom: var(--input-bottom);
-            width: 80%;
-            max-width: 800px;
-            padding: 15px 20px;
-            font-size: var(--font-size-input);
-            text-align: center;
-            border: 3px solid #ffcc00;
-            border-radius: 50px;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            z-index: 10;
-            color: #333;
-            font-weight: 500;
-        }
+    position: absolute;
+    bottom: var(--input-bottom);
+    width: 80%;
+    max-width: 800px;
+    padding: 15px 20px;
+    font-size: var(--font-size-input);
+    border: 3px solid #ffcc00;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 10;
+    color: #333;
+    font-weight: 500;
+
+    /* Nuevas propiedades para textarea */
+    resize: vertical;
+    min-height: 50px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 
         .barra-texto:focus {
             outline: none;
@@ -274,7 +301,8 @@
         </div>
     </div>
     
-    <input type="text" class="barra-texto" placeholder="Escribe la frase aquí..." id="traductor-input" autocomplete="off">
+    <textarea class="barra-texto" placeholder="Escribe la frase aquí..." id="traductor-input" autocomplete="off"></textarea>
+
     
     <div class="progress-bar" id="progress-bar"></div>
     
