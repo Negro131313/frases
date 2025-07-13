@@ -1,10 +1,34 @@
 <!DOCTYPE html>
 <html lang="es">
+<button id="reiniciar-btn" title="Reiniciar frases">&#x21bb;</button>
 <head>
     <meta charset="UTF-8">
     <title>Reconocimiento Automático de Frases</title>
     <script src="frases1.js"></script>
     <style>
+
+        #reiniciar-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 1.5em;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#reiniciar-btn:hover {
+    background-color: #ff4c4c;
+    transform: rotate(15deg);
+}
+
 
 #translation-input {
      width: 95%;
@@ -23,7 +47,7 @@
      width: 95%;        /* Mismo ancho que el textarea */
      margin: 15px auto 0; /* Centrado */
 }
-        
+
         :root {
             --font-size-english: 2.5em;
             --font-size-spanish: 2em;
@@ -503,6 +527,15 @@
         window.addEventListener('load', () => {
             input.focus();
         });
+
+        // Manejo del botón de reinicio
+document.getElementById('reiniciar-btn').addEventListener('click', () => {
+    const confirmar = confirm("¿Estás seguro de que quieres reiniciar las frases?");
+    if (confirmar) {
+        nextPhrase(); // Llama directamente a la siguiente frase
+    }
+});
+
     </script>
 </body>
 </html>
