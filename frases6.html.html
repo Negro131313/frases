@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<button id="reiniciar-btn" title="Reiniciar frases">&#x21bb;</button>
+<head>
+    <meta charset="UTF-8">
+    <title>Reconocimiento Automático de Frases</title>
+    <script src="frases1.js"></script>
+    <style>
+
+        #reiniciar-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 1.5em;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#reiniciar-btn:hover {
+    background-color: #ff4c4c;
+    transform: rotate(15deg);
+}
+
+
+#translation-input {
+     width: 95%;
+     min-height: 50px;  /* Altura inicial más corta */
+     max-height: 200px; /* Límite máximo */
+     /* ... */
+     resize: vertical;
+     overflow-y: auto;
+     white-space: pre-wrap;
+     word-wrap: break-word;
+     line-height: 1.4;
+     margin: 0 auto;    /* Centrado */
+}
+
+.progress-container {
+     width: 95%;        /* Mismo ancho que el textarea */
+     margin: 15px auto 0; /* Centrado */
+}
+
+        :root {
+            --font-size-english: 2.5em;
+            --font-size-spanish: 2em;
+            --font-size-input: 1.8em;
+            --delay-show-spanish: 7s;
+            --interval-change: 14s; /* Ajustado a 14s como en tu script */
+            --min-height-phrase: 150px;
+            --input-bottom: 30%;
+            --color-correct: #4CAF50;
+            --color-incorrect: #f44336;
+            --color-primary: #ffcc00;
+            --color-bg: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--color-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        #frase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: var(--min-height-phrase);
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 100px;
+            max-width: 90%;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #frase h2 {
+            margin: 0;
+            font-size: var(--font-size-english);
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        #frase p {
+            margin: 1em 0 0;
+            font-size: var(--font-size-spanish);
+            color: #ffcc00;
+            opacity: 0;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.5s ease;
+        }
+
+        .barra-texto {
+    position: absolute;
+    bottom: var(--input-bottom);
+    width: 80%;
+    max-width: 800px;
+    padding: 15px 20px;
+    font-size: var(--font-size-input);
+    border: 3px solid #ffcc00;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 10;
+    color: #333;
+    font-weight: 500;
+
+    /* Nuevas propiedades para textarea */
+    resize: vertical;
+    min-height: 50px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+
+        .barra-texto:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 5px rgba(255, 107, 107, 0.3);
+            transform: scale(1.02);
+        }
+
+        .barra-texto::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .decoration {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .decoration:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .decoration:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: 2s;
+        }
+
+        .decoration:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 20%;
+            animation-delay: 4s;
+        }
+
+        .decoration:nth-child(4) {
+            width: 120px;
+            height: 120px;
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #ffcc00;
+        }
+
+        .timer-circle {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 4;
+        }
+
+        .timer-path {
+            fill: none;
+            stroke: #ffcc00;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .timer-text {
+            fill: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            font-weight: bold;
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .feedback.correct {
+            color: var(--color-correct);
+            text-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+        }
+
+        .feedback.incorrect {
+            color: var(--color-incorrect);
+            text-shadow: 0 0 20px rgba(244, 67, 54, 0.8);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(10px, 10px) rotate(2deg); }
+            50% { transform: translate(-10px, 5px) rotate(-2deg); }
+            75% { transform: translate(5px, -10px) rotate(1deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .instructions {
+            position: absolute;
+            bottom: 100px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2em;
+            text-align: center;
+            max-width: 80%;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background: var(--color-primary);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration"></div>
+    <div class="decoration"></div>
+    <div class="decoration"></div>
+    <div class="decoration"></div>
+    
+    <div class="feedback" id="feedback"></div>
+    
+    <div class="container">
+        <div class="timer">
+            <svg viewBox="0 0 50 50" width="50" height="50">
+                <circle class="timer-circle" cx="25" cy="25" r="20"></circle>
+                <circle class="timer-path" cx="25" cy="25" r="20" stroke-dasharray="126" stroke-dashoffset="0"></circle>
+                <text class="timer-text" x="25" y="25">12</text>
+            </svg>
+        </div>
+        
+        <div id="frase">
+            <h2 id="ingles"></h2>
+            <p id="espanol"></p>
+        </div>
+        
+        <div class="instructions">
+            Escribe la frase en inglés que ves arriba. El sistema reconocerá automáticamente cuando sea correcta.
+        </div>
+    </div>
+    
+    <textarea class="barra-texto" placeholder="Escribe la frase aquí..." id="traductor-input" autocomplete="off"></textarea>
+
+    
+    <div class="progress-bar" id="progress-bar"></div>
+    
+    <script>
+        // Configuración de tiempos
+        const config = {
+            delayShowSpanish: 8000, // 7 segundos
+            intervalChange: 22000, // 14 segundos
+            timerTotal: 22 // segundos totales para el temporizador
+        };
+        
+        // Referencias a elementos del DOM
+        const fraseIngles = document.getElementById("ingles");
+        const fraseEspanol = document.getElementById("espanol");
+        const timerPath = document.querySelector(".timer-path");
+        const timerText = document.querySelector(".timer-text");
+        const input = document.getElementById("traductor-input");
+        const fraseContainer = document.getElementById("frase");
+        const feedback = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+        
+        // Variables para el temporizador
+        let timerInterval;
+        let changeInterval;
+        let showSpanishTimeout;
+        let currentPhrase = ""; // Almacena la frase en inglés actual
+        
+        /**
+         * Muestra una nueva frase aleatoria en la pantalla.
+         * Reinicia el temporizador y el campo de entrada.
+         */
+        function mostrarSecuencia() {
+            const frase = Frases.obtenerAleatoria();
+            currentPhrase = frase.english; // Guarda la frase actual
+            
+            // Ocultar frase actual con animación
+            fraseContainer.style.opacity = 0;
+            fraseContainer.style.transform = "translateY(20px)";
+            
+            setTimeout(() => {
+                // Mostrar nueva frase
+                fraseIngles.textContent = frase.english;
+                fraseEspanol.textContent = frase.spanish;
+                fraseEspanol.style.opacity = 0; // Asegura que el español esté oculto al inicio
+                
+                // Restaurar visibilidad y aplicar animación de pulso
+                fraseContainer.style.opacity = 1;
+                fraseContainer.style.transform = "translateY(0)";
+                fraseContainer.style.animation = "pulse 0.5s ease";
+                
+                // Iniciar el temporizador visual
+                iniciarTemporizador();
+                
+                // Mostrar la traducción en español después de un retraso
+                showSpanishTimeout = setTimeout(() => {
+                    fraseEspanol.style.opacity = 1;
+                }, config.delayShowSpanish);
+                
+                // Limpiar y enfocar el input
+                input.value = '';
+                input.focus();
+                input.style.backgroundColor = ''; // Restaura el fondo
+                input.style.borderColor = '#ffcc00'; // Restaura el borde
+                progressBar.style.width = '0%'; // Reinicia la barra de progreso
+                
+                // Quita la animación de pulso después de un tiempo
+                setTimeout(() => {
+                    fraseContainer.style.animation = '';
+                }, 500);
+            }, 500); // Retraso para que la animación de ocultar se complete
+        }
+        
+        /**
+         * Inicia el temporizador circular y numérico.
+         */
+        function iniciarTemporizador() {
+            clearInterval(timerInterval); // Limpia cualquier temporizador existente
+            let timeLeft = config.timerTotal;
+            
+            timerText.textContent = timeLeft;
+            timerPath.style.strokeDashoffset = 0; // Reinicia el círculo
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerText.textContent = timeLeft;
+                
+                // Calcula el progreso del círculo (126 es la circunferencia para r=20)
+                const offset = 126 - (126 * (config.timerTotal - timeLeft) / config.timerTotal);
+                timerPath.style.strokeDashoffset = offset;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    // Si el tiempo se acaba, pasa a la siguiente frase
+                    nextPhrase();
+                }
+            }, 1000); // Actualiza cada segundo
+        }
+        
+        /**
+         * Pasa a la siguiente frase, limpiando todos los temporizadores actuales.
+         */
+        function nextPhrase() {
+            // Limpia todos los intervalos y timeouts activos para evitar conflictos
+            clearInterval(timerInterval);
+            clearInterval(changeInterval);
+            clearTimeout(showSpanishTimeout);
+            
+            // Llama a la función para mostrar la siguiente frase
+            mostrarSecuencia();
+            
+            // Reinicia el intervalo para el cambio automático de frase
+            changeInterval = setInterval(mostrarSecuencia, config.intervalChange);
+        }
+        
+        /**
+         * Muestra un mensaje de retroalimentación (Correcto/Incorrecto) en el centro de la pantalla.
+         * @param {string} message - El texto a mostrar.
+         * @param {boolean} isCorrect - True si es correcto, false si es incorrecto.
+         */
+        function showFeedback(message, isCorrect) {
+            feedback.textContent = message;
+            feedback.className = "feedback " + (isCorrect ? "correct" : "incorrect");
+            feedback.style.opacity = 1; // Hace visible el feedback
+            
+            // Oculta el feedback después de un segundo
+            setTimeout(() => {
+                feedback.style.opacity = 0;
+            }, 1000);
+        }
+        
+        // Listener para el evento 'input' en el campo de texto
+        input.addEventListener('input', function() {
+            const userInput = this.value; // Obtiene el valor actual del input
+            
+            // Calcula el progreso de la barra basándose en la longitud de la entrada.
+            // Esto da una retroalimentación visual de cuánto falta por escribir.
+            const progress = (userInput.length / currentPhrase.length) * 100;
+            progressBar.style.width = Math.min(progress, 100) + '%';
+            
+            // Normaliza ambas cadenas para la comparación:
+            // 1. Elimina espacios al inicio y al final (`.trim()`).
+            // 2. Elimina cualquier secuencia de uno o más '?', '.', o '!' al final de la cadena (`.replace(/[\?!.]+$/, '')`).
+            // La 'i' en la bandera de la expresión regular no es necesaria aquí porque ya usamos .toLowerCase()
+            const normalizedInput = userInput.trim().replace(/[\?!.]+$/, '');
+            const normalizedPhrase = currentPhrase.trim().replace(/[\?!.]+$/, '');
+            
+            // Compara las frases normalizadas (ignorando mayúsculas/minúsculas)
+            if (normalizedInput.toLowerCase() === normalizedPhrase.toLowerCase()) {
+                // Si la respuesta es correcta
+                this.style.backgroundColor = '#4CAF50'; // Fondo verde
+                this.style.borderColor = '#388E3C'; // Borde verde más oscuro
+                showFeedback("¡CORRECTO!", true); // Muestra el mensaje de correcto
+                progressBar.style.backgroundColor = '#4CAF50'; // Barra de progreso verde
+                
+                // Pasa a la siguiente frase después de un breve retraso
+                setTimeout(() => {
+                    this.style.backgroundColor = ''; // Restaura el fondo
+                    this.style.borderColor = '#ffcc00'; // Restaura el borde
+                    progressBar.style.backgroundColor = '#ffcc00'; // Restaura la barra
+                    nextPhrase(); // Carga la siguiente frase
+                }, 800);
+            } else {
+                // Si la respuesta no es totalmente correcta
+                // Comprueba si la entrada coincide parcialmente con el inicio de la frase correcta.
+                const isPartiallyCorrect = normalizedPhrase.toLowerCase().startsWith(normalizedInput.toLowerCase());
+                
+                if (userInput.length > 0) { // Solo aplica colores si hay algo escrito
+                    if (isPartiallyCorrect) {
+                        this.style.borderColor = '#4CAF50'; // Borde verde para indicar que va bien
+                        progressBar.style.backgroundColor = '#ffcc00'; // La barra sigue amarilla
+                    } else {
+                        this.style.borderColor = '#f44336'; // Borde rojo si hay un error
+                        progressBar.style.backgroundColor = '#f44336'; // Barra de progreso roja
+                        
+                        // Después de un breve tiempo, si sigue incorrecto, restaura el color del borde y barra
+                        setTimeout(() => {
+                            // Verifica de nuevo por si el usuario corrigió el error muy rápido
+                            if (this.value.trim().replace(/[\?!.]+$/, '').toLowerCase() !== normalizedPhrase.toLowerCase()) {
+                                this.style.borderColor = '#ffcc00';
+                                progressBar.style.backgroundColor = '#ffcc00';
+                            }
+                        }, 500);
+                    }
+                } else {
+                    // Si el input está vacío, los colores vuelven a ser los por defecto
+                    this.style.borderColor = '#ffcc00';
+                    progressBar.style.backgroundColor = '#ffcc00';
+                }
+            }
+        });
+        
+        // Iniciar la primera secuencia de frase cuando la página carga
+        mostrarSecuencia();
+        // Configurar el intervalo para cambiar de frase automáticamente
+        changeInterval = setInterval(mostrarSecuencia, config.intervalChange);
+        
+        // Enfocar el input automáticamente al cargar la página para que el usuario pueda empezar a escribir
+        window.addEventListener('load', () => {
+            input.focus();
+        });
+
+        // Manejo del botón de reinicio
+document.getElementById('reiniciar-btn').addEventListener('click', () => {
+    const confirmar = confirm("¿Estás seguro de que quieres reiniciar las frases?");
+    if (confirmar) {
+        nextPhrase(); // Llama directamente a la siguiente frase
+    }
+});
+
+    </script>
+</body>
+</html>
