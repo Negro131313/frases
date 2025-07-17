@@ -1,4 +1,8 @@
-[
+// traduc.js
+window.frasesApp = {
+    phrases: [
+
+
   { "english": "They broke into the old mansion at midnight last Saturday night.", "spanish": "Irrumpieron en la vieja mansión a medianoche el sábado pasado." },
   { "english": "She waited for the train near the station in heavy rain.", "spanish": "Ella esperó el tren cerca de la estación bajo fuerte lluvia." },
   { "english": "I found a wallet lying on the sidewalk near the corner.", "spanish": "Encontré una cartera tirada en la acera cerca de la esquina." },
@@ -97,4 +101,50 @@
   { "english": "We met at the café near the station.", "spanish": "Nos encontramos en la cafetería cerca de la estación." },
   { "english": "She forgot to water the plants.", "spanish": "Olvidó regar las plantas." },
   { "english": "He laughed so hard that he cried.", "spanish": "Se rió tanto que lloró." }
-]
+],
+
+    // Include the contractions mapping here
+    contractions: {
+        "i'm": "i am",
+        "you're": "you are",
+        "he's": "he is",
+        "she's": "she is",
+        "it's": "it is",
+        "we're": "we are",
+        "they're": "they are",
+        "i've": "i have",
+        "you've": "you have",
+        "we've": "we have",
+        "they've": "they have",
+        "i'll": "i will",
+        "you'll": "you will",
+        "he'll": "he will",
+        "she'll": "she will",
+        "it'll": "it will",
+        "we'll": "we will",
+        "they'll": "they will",
+        "isn't": "is not",
+        "aren't": "are not",
+        "wasn't": "was not",
+        "weren't": "were not",
+        "hasn't": "has not",
+        "haven't": "have not",
+        "hadn't": "had not",
+        "won't": "will not",
+        "wouldn't": "would not",
+        "don't": "do not",
+        "doesn't": "does not",
+        "didn't": "did not",
+        "can't": "cannot",
+        "couldn't": "could not",
+        "shouldn't": "should not",
+        "mightn't": "might not",
+        "mustn't": "must not",
+        "take off": "takeoff",
+        "takeoff": "take off"
+    },
+
+    obtenerAleatoria: function() {
+        return this.phrases[Math.floor(Math.random() * this.phrases.length)];
+    }
+};
