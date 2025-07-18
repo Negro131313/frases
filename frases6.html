@@ -1,10 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
+<button id="reiniciar-btn" title="Reiniciar frases">&#x21bb;</button>
 <head>
     <meta charset="UTF-8">
     <title>Reconocimiento Automático de Frases</title>
     <script src="frases1.js"></script>
     <style>
+
+        #reiniciar-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 1.5em;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#reiniciar-btn:hover {
+    background-color: #ff4c4c;
+    transform: rotate(15deg);
+}
+
+
+#translation-input {
+     width: 95%;
+     min-height: 50px;  /* Altura inicial más corta */
+     max-height: 200px; /* Límite máximo */
+     /* ... */
+     resize: vertical;
+     overflow-y: auto;
+     white-space: pre-wrap;
+     word-wrap: break-word;
+     line-height: 1.4;
+     margin: 0 auto;    /* Centrado */
+}
+
+.progress-container {
+     width: 95%;        /* Mismo ancho que el textarea */
+     margin: 15px auto 0; /* Centrado */
+}
+
         :root {
             --font-size-english: 2.5em;
             --font-size-spanish: 2em;
@@ -12,7 +55,7 @@
             --delay-show-spanish: 7s;
             --interval-change: 14s; /* Ajustado a 14s como en tu script */
             --min-height-phrase: 150px;
-            --input-bottom: 10%;
+            --input-bottom: 30%;
             --color-correct: #4CAF50;
             --color-incorrect: #f44336;
             --color-primary: #ffcc00;
@@ -56,7 +99,7 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             margin-bottom: 100px;
-            max-width: 90%;
+            max-width: 00%;
             transition: transform 0.5s ease, opacity 0.5s ease;
             border: 3px solid rgba(255, 255, 255, 0.1);
         }
@@ -80,22 +123,30 @@
         }
 
         .barra-texto {
-            position: absolute;
-            bottom: var(--input-bottom);
-            width: 80%;
-            max-width: 800px;
-            padding: 15px 20px;
-            font-size: var(--font-size-input);
-            text-align: center;
-            border: 3px solid #ffcc00;
-            border-radius: 50px;
-            background-color: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            z-index: 10;
-            color: #333;
-            font-weight: 500;
-        }
+    position: absolute;
+    bottom: var(--input-bottom);
+    width: 80%;
+    max-width: 700px;
+    padding: 75px 20px;
+    font-size: var(--font-size-input);
+    border: 3px solid #ffcc00;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 10;
+    color: #333;
+    font-weight: 500;
+
+    /* Nuevas propiedades para textarea */
+    resize: vertical;
+    min-height: 50px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 
         .barra-texto:focus {
             outline: none;
@@ -227,7 +278,7 @@
 
         .instructions {
             position: absolute;
-            bottom: 70px;
+            bottom: 100px;
             color: rgba(255, 255, 255, 0.8);
             font-size: 1.2em;
             text-align: center;
@@ -274,16 +325,17 @@
         </div>
     </div>
     
-    <input type="text" class="barra-texto" placeholder="Escribe la frase aquí..." id="traductor-input" autocomplete="off">
+    <textarea class="barra-texto" placeholder="Escribe la frase aquí..." id="traductor-input" autocomplete="off"></textarea>
+
     
     <div class="progress-bar" id="progress-bar"></div>
     
     <script>
         // Configuración de tiempos
         const config = {
-            delayShowSpanish: 10000, // 7 segundos
-            intervalChange: 15000, // 14 segundos
-            timerTotal: 15 // segundos totales para el temporizador
+            delayShowSpanish: 8000, // 7 segundos
+            intervalChange: 22000, // 14 segundos
+            timerTotal: 22 // segundos totales para el temporizador
         };
         
         // Referencias a elementos del DOM
@@ -475,6 +527,15 @@
         window.addEventListener('load', () => {
             input.focus();
         });
+
+        // Manejo del botón de reinicio
+document.getElementById('reiniciar-btn').addEventListener('click', () => {
+    const confirmar = confirm("¿Estás seguro de que quieres reiniciar las frases?");
+    if (confirmar) {
+        nextPhrase(); // Llama directamente a la siguiente frase
+    }
+});
+
     </script>
 </body>
 </html>
